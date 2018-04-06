@@ -13,13 +13,10 @@ module Dagger
 
       private
 
+      # Initialize the vertex with a keytree (forest) from a directory
+      # of files.
       def initialize_kwarg_directory(dir)
-        @keys = KeyTree::Forest.new
-        Dir.each_child(dir) do |file|
-          path = File.join(dir, file)
-          next unless File.file?(path)
-          @keys << KeyTree.open(path)
-        end
+        @keys = KeyTree.open_all(dir)
       end
     end
   end
