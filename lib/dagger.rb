@@ -4,6 +4,6 @@ require 'dagger/graph'
 #
 module Dagger
   def self.load(dir)
-    Graph.new(directory: dir)
+    Graph.load(dir)
   end
 end
