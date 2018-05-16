@@ -25,5 +25,7 @@ module Dagger
       return unless edge.head?(self)
       @inherited << edge.tail.keys
     end
+
+    alias to_s name
   end
 end
