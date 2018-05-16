@@ -37,7 +37,7 @@ module Dagger
 
       target = local_path(File.realpath(path))
       parent = local_path(parent)
-      defer_edge(target, parent)
+      defer_edge(target, parent, name: File.basename(path))
     end
 
     def directory_loader(path:, parent:, lstat:, **)
