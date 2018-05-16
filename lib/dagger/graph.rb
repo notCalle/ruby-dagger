@@ -7,14 +7,16 @@ module Dagger
   class Graph < Tangle::DAG
     DEFAULT_MIXINS = [Tangle::Mixin::Directory].freeze
 
-    def self.load(dir)
-      new(directory: {
-            root: File.realpath(dir),
-            loaders: %i[symlink_loader directory_loader keytree_loader]
-          })
+    def self.load(dir, &default_proc)
+      dir_options = {
+        root: File.realpath(dir),
+        loaders: %i[symlink_loader directory_loader keytree_loader]
+      }
+      new(directory: dir_options, &default_proc)
     end
 
-    def initialize(*_args)
+    def initialize(*_args, &default_proc)
+      @default_proc = default_proc
       @deferred_edges = []
       super
       @deferred_edges.each do |args|
@@ -42,7 +44,7 @@ module Dagger
       return unless lstat.directory?
 
       path = local_path(path)
-      vertex = Vertex.new(path)
+      vertex = Vertex.new(path, &@default_proc)
       add_vertex(vertex)
       return true if parent.nil?
       parent = local_path(parent)

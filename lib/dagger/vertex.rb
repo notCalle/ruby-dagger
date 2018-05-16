@@ -6,11 +6,13 @@ module Dagger
     attr_reader :keys, :local, :inherited
     attr_reader :name
 
-    def initialize(name)
+    def initialize(name, &default_proc)
       @name = name
       @keys = KeyTree::Forest.new
       @keys << @local = KeyTree::Forest.new
       @keys << @inherited = KeyTree::Forest.new
+      return unless block_given?
+      @inherited << KeyTree::Tree.new(&default_proc)
     end
 
     def [](key)
