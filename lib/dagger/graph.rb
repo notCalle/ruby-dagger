@@ -25,9 +25,8 @@ module Dagger
       end
     end
 
-
-    def select(filter)
-      vertices.select { |vertex| send(filter, vertex) }
+    def select(&_filter)
+      vertices.select { |vertex| yield(self, vertex) }
     end
 
     protected
