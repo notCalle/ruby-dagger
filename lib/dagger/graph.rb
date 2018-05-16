@@ -18,19 +18,11 @@ module Dagger
       @deferred_edges = []
       super
       @deferred_edges.each do |args|
-        add_edge(*args.map { |name| fetch(name) }, callback: :did_add_edge)
+        tail, head, *kwargs = args
+        add_edge(*[tail, head].map { |name| fetch(name) }, *kwargs)
       end
     end
 
-    def add_edge(*vertices, callback: nil, **kwargs)
-      edge = super(*vertices, **kwargs)
-      unless callback.nil?
-        vertices.each do |vertex|
-          callback.to_proc.call(vertex, edge)
-        end
-      end
-      edge
-    end
 
     def select(filter)
       vertices.select { |vertex| send(filter, vertex) }
@@ -38,27 +30,27 @@ module Dagger
 
     protected
 
-    def symlink_loader(path, parent)
-      return unless File.symlink?(path)
+    def symlink_loader(path:, parent:, lstat:, **)
+      return unless lstat.symlink?
 
       target = local_path(File.realpath(path))
       parent = local_path(parent)
       defer_edge(target, parent)
     end
 
-    def directory_loader(path, parent)
-      return unless File.directory?(path)
+    def directory_loader(path:, parent:, lstat:, **)
+      return unless lstat.directory?
 
       path = local_path(path)
       vertex = Vertex.new(path)
-      add_vertex(vertex, name: path)
+      add_vertex(vertex)
       return true if parent.nil?
       parent = local_path(parent)
       defer_edge(parent, path)
     end
 
-    def keytree_loader(path, parent)
-      return unless File.file?(path)
+    def keytree_loader(path:, parent:, lstat:, **)
+      return unless lstat.file?
 
       fetch(local_path(parent)) << KeyTree.open(path)
     end

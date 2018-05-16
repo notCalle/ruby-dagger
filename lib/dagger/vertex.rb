@@ -18,7 +18,7 @@ module Dagger
       keys << keytree
     end
 
-    def did_add_edge(edge)
+    def edge_added(edge)
       return unless edge.head?(self)
       self << edge.tail.keys
     end
