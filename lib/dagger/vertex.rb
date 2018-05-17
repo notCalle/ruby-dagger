@@ -28,6 +28,11 @@ module Dagger
       @inherited << edge.tail.keys
     end
 
+    def edge_removed(edge)
+      return unless edge.head?(self)
+      @inherited.reject! { |tree| tree.equal?(edge.tail.keys) }
+    end
+
     alias to_s name
   end
 end
