@@ -60,9 +60,9 @@ module Dagger
     #   generate_value_for_string(string: data)
     #
     # Throws +:result+ or raises +KeyError+
-    def generate_value_for_string(string:)
+    def generate_value_for_string(dictionary = @dictionary, string:)
       enumerable(string).each do |fmtstr|
-        result = format_string(fmtstr, @dictionary)
+        result = format_string(fmtstr, dictionary)
         throw :result, result unless result.nil?
       end
     end
