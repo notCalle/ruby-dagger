@@ -20,6 +20,8 @@ module Dagger
     end
 
     def [](key)
+      key = KeyTree::Path[key] unless key.is_a? KeyTree::Path
+      return inherited[key[1..-1]] if key.prefix?(KeyTree::Path['^'])
       keys[key]
     end
 
