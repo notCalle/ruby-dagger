@@ -3,16 +3,20 @@ require 'key_tree'
 module Dagger
   # Vertex class for Dagger, representing a filesystem directory
   class Vertex
-    attr_reader :keys, :local, :inherited
-    attr_reader :name
-
     def initialize(name, &default_proc)
-      @name = name
       @keys = KeyTree::Forest.new
       @keys << @local = KeyTree::Forest.new
+      @keys << @meta = KeyTree::Tree.new
       @keys << @inherited = KeyTree::Forest.new
+      @meta['_meta.name'] = name
       return unless block_given?
       @inherited << KeyTree::Tree.new(&default_proc)
+    end
+
+    attr_reader :inherited, :keys, :local, :meta
+
+    def name
+      @meta['_meta.name']
     end
 
     def [](key)
