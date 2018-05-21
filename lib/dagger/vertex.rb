@@ -23,6 +23,10 @@ module Dagger
       keys[key]
     end
 
+    def fetch(key)
+      keys.fetch(key)
+    end
+
     def <<(keytree)
       @local << keytree
     end
