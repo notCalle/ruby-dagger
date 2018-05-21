@@ -1,6 +1,6 @@
-require 'dagger/vertex'
 require 'tangle'
 require 'tangle/mixin/directory'
+require_relative 'vertex'
 
 module Dagger
   # Specialization of Tangle::DAG
