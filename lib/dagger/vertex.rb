@@ -15,7 +15,7 @@ module Dagger
     attr_reader :inherited, :keys, :local, :meta
 
     def name
-      @meta['_meta.name']
+      meta['_meta.name']
     end
 
     def [](key)
@@ -29,17 +29,17 @@ module Dagger
     end
 
     def <<(keytree)
-      @local << keytree
+      local << keytree
     end
 
     def edge_added(edge)
       return unless edge.head?(self)
-      @inherited << edge.tail.keys
+      inherited << edge.tail.keys
     end
 
     def edge_removed(edge)
       return unless edge.head?(self)
-      @inherited.reject! { |tree| tree.equal?(edge.tail.keys) }
+      inherited.reject! { |tree| tree.equal?(edge.tail.keys) }
     end
 
     alias to_s name
