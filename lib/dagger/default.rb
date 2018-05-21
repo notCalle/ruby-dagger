@@ -67,6 +67,29 @@ module Dagger
       end
     end
 
+    # Generate a value by collecting regexp matches for keys,
+    # and filling format strings.
+    #
+    # _default.key:
+    #   - regexp:
+    #       srckey:
+    #         - regexp
+    #         - ...
+    #       ...
+    #     string:
+    #       - format string
+    #       - ...
+    #
+    # :call-seq:
+    #   generate_value_for_regexp(regexp:, string:)
+    def generate_value_for_regexp(regexp:, **kwargs)
+      dictionary = regexp.each_with_object({}) do |key, regexps, matches|
+        matches.merge!(match_regexps(key, regexps))
+      end
+
+      generate_value_for_string(dictionary, **kwargs)
+    end
+
     # Set requirement for further processing.
     #
     # _default.key:
