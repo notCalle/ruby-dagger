@@ -1,0 +1,14 @@
+---
+  _default:
+    class:
+      - string:
+        - "%{_meta.basename}"
+    path:
+      - string:
+        - "%{^.path} < %{class}"
+        - "< %{class}"
+    parent:
+      - string:
+        - "%{^.class}"
+  class: root
+...
