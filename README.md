@@ -1,4 +1,4 @@
-[![Gem Version](https://badge.fury.io/rb/ruby-dagger.svg)](https://badge.fury.io/rb/ruby-dagger) [![Maintainability](https://api.codeclimate.com/v1/badges/0d92a4d05b6bb5c06dce/maintainability)](https://codeclimate.com/github/notCalle/ruby-dagger/maintainability)
+[![Gem Version](https://badge.fury.io/rb/ruby-dagger.svg)](https://badge.fury.io/rb/ruby-dagger) [![Maintainability](https://api.codeclimate.com/v1/badges/4038215eb129292a826d/maintainability)](https://codeclimate.com/github/notCalle/ruby-dagger/maintainability)
 
 # Dagger
 
