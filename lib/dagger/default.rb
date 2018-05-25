@@ -83,7 +83,7 @@ module Dagger
       key, arg = *context.rule_chain.first
       context.rule_chain.delete(key)
       klass = Dagger::Generate.const_get(camelize(key))
-      klass.new(context).yield(arg) { |value| throw context.result, value }
+      klass[context, arg, &->(value) { throw context.result, value }]
     end
 
     # Convert snake_case to CamelCase

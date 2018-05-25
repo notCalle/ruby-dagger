@@ -10,7 +10,7 @@ module Dagger
     #       - "format string"
     #       - ...
     class String < Dagger::Generator
-      def yield(strings)
+      def process(strings)
         enumerable(strings).each do |fmtstr|
           result = format_string(fmtstr, dictionary)
           yield result unless result.nil?

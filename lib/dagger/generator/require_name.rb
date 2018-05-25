@@ -8,7 +8,7 @@ module Dagger
     #   - require_name: regexp
     #   - ...
     class RequireName < Dagger::Generator
-      def yield(regexps)
+      def process(regexps)
         string = dictionary['_meta.name']
         enumerable(regexps).any? do |regexp|
           ::Regexp.new(regexp).match?(string)

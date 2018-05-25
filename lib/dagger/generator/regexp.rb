@@ -15,7 +15,7 @@ module Dagger
     #       - format string
     #       - ...
     class Regexp < Dagger::Generator
-      def yield(sources)
+      def process(sources)
         matches = {}
         sources.each do |key, regexps|
           matches.merge!(match_regexps(key, regexps))

@@ -1,16 +1,43 @@
 require 'forwardable'
 
 module Dagger
+  # Abstract super class for default value generators.
+  # Stores the +Context+ on initialization, and provides private
+  # helper methods to concrete subclasses.
+  #
+  # +Context+ key access:
+  # :call-seq:
+  #   dictionary => Hash-like with current key lookup dictionary.
+  #   rule_chain => Hash of remaining rules in the current chain.
+  #
+  # +Context+ value update:
+  # :call-seq:
+  #   update(key: value, ...)
+  #
+  # Wrap non-enumerable objects in an +Array+
+  # :call-seq:
+  #   enumerable(value) => value || [value]
+  #
+  # Concrete subclasses must implement:
+  # :call-seq:
+  #   process(arg, &->(value))
+  #
+  # [+arg+]     Value for current method in the +rule_chain+
+  # [+value+]   If a value was found it should be +yield+:ed
   class Generator
     extend Forwardable
+
+    def self.[](context, arg, &result_yielder)
+      new(context).process(arg, &result_yielder)
+    end
 
     def initialize(context)
       @context = context
     end
 
-    delegate %i[dictionary result rule_chain] => :@context
-
     private
+
+    delegate %i[dictionary rule_chain] => :@context
 
     # Update context attributes with new values
     #

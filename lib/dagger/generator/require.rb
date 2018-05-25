@@ -9,7 +9,7 @@ module Dagger
     #       key: regexp
     #   - ...
     class Require < Dagger::Generator
-      def yield(keys)
+      def process(keys)
         return unless keys.all? do |key, regexps|
           string = dictionary[key]
           enumerable(regexps).any? do |regexp|
