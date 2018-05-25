@@ -1,10 +1,10 @@
 require 'set'
+require_relative 'context'
+require_relative 'generator'
 
 module Dagger
   # Default value generator for a dictionary
   class Default
-    KeyPath = KeyTree::Path
-
     # Initialize a default value generator for a +dictionary+
     #
     # :call-seq:
@@ -14,9 +14,9 @@ module Dagger
     def initialize(dictionary, cached: false, rule_prefix: '_default')
       @dictionary = dictionary
       @cached = cached
-      @rule_prefix = KeyPath[rule_prefix]
-      @locks = Set[]
+      @rule_prefix = KeyTree::Path[rule_prefix]
       @default_proc = ->(tree, key) { generate(tree, key) }
+      @locks = Set[]
     end
 
     attr_reader :default_proc
@@ -37,92 +37,31 @@ module Dagger
     # :call-seq:
     #   generate(tree, key) => value || KeyError
     def generate(tree, key)
-      key = KeyPath[key] unless key.is_a? KeyPath
+      key = KeyTree::Path[key] unless key.is_a? KeyTree::Path
       raise %(deadlock detected: "#{key}") unless @locks.add?(key)
 
-      return result = generate_value(key) unless cached?
-      tree[key] = result
+      return result = process(key) unless cached?
+      tree[key] = result unless result.nil?
     ensure
       @locks.delete(key)
     end
 
-    protected
-
-    # Generate a value for a +string+ rule.
-    #
-    # _default.key:
-    #   - string: "format string"
-    #   - string:
-    #       - "format string"
-    #       - ...
-    #
-    # :call-seq:
-    #   generate_value_for_string(string: data)
-    #
-    # Throws +:result+ or raises +KeyError+
-    def generate_value_for_string(dictionary = @dictionary, string:)
-      enumerable(string).each do |fmtstr|
-        result = format_string(fmtstr, dictionary)
-        throw :result, result unless result.nil?
-      end
-    end
-
-    # Generate a value by collecting regexp matches for keys,
-    # and filling format strings.
-    #
-    # _default.key:
-    #   - regexp:
-    #       srckey:
-    #         - regexp
-    #         - ...
-    #       ...
-    #     string:
-    #       - format string
-    #       - ...
-    #
-    # :call-seq:
-    #   generate_value_for_regexp(regexp:, string:)
-    def generate_value_for_regexp(regexp:, **kwargs)
-      dictionary = regexp.each_with_object({}) do |key, regexps, matches|
-        matches.merge!(match_regexps(key, regexps))
-      end
-
-      generate_value_for_string(dictionary, **kwargs)
-    end
-
-    # Set requirement for further processing.
-    #
-    # _default.key:
-    #   - require:
-    #       key: regexp
-    #   - ...
-    #
-    # :call-seq:
-    #   generate_value_for_require(require:)
-    def generate_value_for_require(require:)
-      throw :abort unless require.all? do |key, regexps|
-        string = @dictionary[key]
-        enumerable(regexps).any? do |regexp|
-          Regexp.new(regexp).match?(string)
-        end
-      end
-    end
-
     private
 
-    # Generate the default value for a +key+, raising a +KeyError+ if
-    # a value could not be generated. Catches :result, and :abort thows
-    # from rule processing.
+    # Process value generation rules for +context+, raising a +KeyError+
+    # if a value could not be generated. Catches :result thows from rule
+    # processing.
     #
     # :call-seq:
-    #   generate_value(key) => value || KeyError
-    def generate_value(key)
-      catch :result do
-        catch :abort do
-          rules = default_rules(key)
-          rules.each do |rule|
-            process_rule(rule.transform_keys(&:to_sym))
-          end
+    #   yield => value || KeyError
+    def process(key)
+      catch do |ball|
+        default_rules(key).each do |rule|
+          context = Context.new(result: ball,
+                                dictionary: @dictionary,
+                                rule_chain: rule.clone)
+
+          process_rule(context) until context.rule_chain.empty?
         end
         raise KeyError, %(no rule succeeded for "#{key}")
       end
@@ -136,49 +75,23 @@ module Dagger
       @dictionary.fetch(@rule_prefix + key)
     end
 
-    # Process a default value +rule+.
+    # Call the processing method for the first clause of a rule
     #
     # :call-seq:
-    #   process_rule(rule)
-    #
-    # Throws +:result+ or raises +KeyError+
-    def process_rule(rule)
-      method = "generate_value_for_#{rule.keys.first}".to_sym.to_proc
-
-      method.call(self, **rule)
-    rescue KeyError
-      nil
+    #   call_rule
+    def process_rule(context)
+      key, arg = *context.rule_chain.first
+      context.rule_chain.delete(key)
+      klass = Dagger::Generate.const_get(camelize(key))
+      klass.new(context).yield(arg) { |value| throw context.result, value }
     end
 
-    # Match the value of a key agains regexps, returning the named
-    # captured data.
+    # Convert snake_case to CamelCase
     #
     # :call-seq:
-    #   match_regexps(key, regexps) => Hash
-    def match_regexps(key, regexps)
-      string = @dictionary[key]
-
-      enumerable(regexps).each_with_object({}) do |regexp, matches|
-        matchdata = Regexp.new(regexp).match(string)
-        next if matchdata.nil?
-        matches.merge!(matchdata.named_captures.transform_keys(&:to_sym))
-      end
-    end
-
-    # Format a +string+ with values from a +dictionary+
-    # :call-seq:
-    #   format_string(string, dictionary)
-    def format_string(string, dictionary)
-      Kernel.format(string, Hash.new { |_, key| dictionary[key] })
-    rescue KeyError
-      nil
-    end
-
-    # Make an array of a value unless it is already enumerable
-    # :call-seq:
-    #   enumerable(value) => value || [value]
-    def enumerable(value)
-      value.respond_to?(:each) ? value : [value]
+    #   camelize(string)
+    def camelize(string)
+      string.split('_').map!(&:capitalize).join
     end
   end
 end
