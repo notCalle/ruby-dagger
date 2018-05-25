@@ -29,8 +29,8 @@ Gem::Specification.new do |spec|
   spec.platform = Gem::Platform::RUBY
   spec.required_ruby_version = '~> 2.1'
 
-  spec.add_dependency 'key_tree', '~> 0.5.0'
-  spec.add_dependency 'tangle', '~> 0.8.0'
+  spec.add_dependency 'key_tree', '~> 0.5'
+  spec.add_dependency 'tangle', '~> 0.9'
 
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'git-version-bump', '~> 0.15'
