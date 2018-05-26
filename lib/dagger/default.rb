@@ -57,11 +57,9 @@ module Dagger
     def process(key)
       catch do |ball|
         default_rules(key).each do |rule|
-          context = Context.new(result: ball,
-                                dictionary: @dictionary,
-                                rule_chain: rule.clone)
+          context = Context.new(result: ball, dictionary: @dictionary)
 
-          process_rule(context) until context.rule_chain.empty?
+          process_rule_chain(rule, context)
         end
         raise KeyError, %(no rule succeeded for "#{key}")
       end
@@ -75,15 +73,17 @@ module Dagger
       @dictionary.fetch(@rule_prefix + key)
     end
 
-    # Call the processing method for the first clause of a rule
+    # Process the methods in a rule chain
     #
     # :call-seq:
-    #   call_rule
-    def process_rule(context)
-      key, arg = *context.rule_chain.first
-      context.rule_chain.delete(key)
-      klass = Dagger::Generate.const_get(camelize(key))
-      klass[context, arg, &->(value) { throw context.result, value }]
+    #   process_rule_chain(rule_chain, context)
+    def process_rule_chain(rule_chain, context)
+      rule_chain.each do |key, arg|
+        klass = Dagger::Generate.const_get(camelize(key))
+        klass[context, arg, &->(value) { throw context.result, value }]
+      end
+    rescue StopIteration
+      nil
     end
 
     # Convert snake_case to CamelCase

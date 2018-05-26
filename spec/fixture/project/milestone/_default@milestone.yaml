@@ -1,0 +1,10 @@
+---
+  milestone:
+    - require_name: "^/milestone"
+      string: "%{_meta.basename}"
+  release:
+    - require_name: "^/milestone/release-"
+      regexp:
+        _meta.basename: "release-(?<release>.*)"
+      string: "%{release}"
+...

@@ -10,7 +10,7 @@ module Dagger
     class RequireName < Dagger::Generator
       def process(regexps)
         string = dictionary['_meta.name']
-        enumerable(regexps).any? do |regexp|
+        stop unless enumerable(regexps).any? do |regexp|
           ::Regexp.new(regexp).match?(string)
         end
       end

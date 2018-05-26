@@ -1,12 +1,14 @@
-[![Gem Version](https://badge.fury.io/rb/ruby-dagger.svg)](https://badge.fury.io/rb/ruby-dagger) [![Maintainability](https://api.codeclimate.com/v1/badges/0d92a4d05b6bb5c06dce/maintainability)](https://codeclimate.com/github/notCalle/ruby-dagger/maintainability)
+[![Gem Version](https://badge.fury.io/rb/ruby-dagger.svg)](https://badge.fury.io/rb/ruby-dagger) [![Maintainability](https://api.codeclimate.com/v1/badges/4038215eb129292a826d/maintainability)](https://codeclimate.com/github/notCalle/ruby-dagger/maintainability)
 
 # Dagger
 
-`Dagger` can manage a [directed acyclic graph](/notcalle/tangle) of
-[key trees](/notcalle/keytree), inspired by the ideas behind [PalletJack](/saab-simc-admin/palletjack).
+`Dagger` can manage a
+[directed acyclic graph](https://github.com/notcalle/tangle) of
+[key trees](https://github.com/notcalle/keytree), inspired by the ideas behind [PalletJack](https://github.com/saab-simc-admin/palletjack).
 
 The DAG is stored in a regular posix file system hierarchy, where
-/directories/ are vertices with a forest of key trees from the contained /files/. Edges are formed from the directory structure, and /symlinks/.
+_directories_ are vertices with a forest of key trees from the contained
+_files_. Edges are formed from the directory structure, and _symlinks_.
 
 Edge direction (default top->down & target->source) is selectable,
 but key tree inheritence is always top->down & target->source.

@@ -1,0 +1,5 @@
+---
+  status:
+    - require_name: "^/status/"
+      string: "%{_meta.basename}"
+...
