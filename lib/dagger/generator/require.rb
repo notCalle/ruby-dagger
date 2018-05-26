@@ -10,7 +10,7 @@ module Dagger
     #   - ...
     class Require < Dagger::Generator
       def process(keys)
-        return unless keys.all? do |key, regexps|
+        stop unless keys.any? do |key, regexps|
           string = dictionary[key]
           enumerable(regexps).any? do |regexp|
             ::Regexp.new(regexp).match?(string)
