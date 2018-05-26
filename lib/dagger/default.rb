@@ -5,6 +5,10 @@ require_relative 'generator'
 module Dagger
   # Default value generator for a dictionary
   class Default
+    def self.proc(*args)
+      new(*args).default_proc
+    end
+
     # Initialize a default value generator for a +dictionary+
     #
     # :call-seq:
