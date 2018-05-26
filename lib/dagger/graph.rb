@@ -7,7 +7,8 @@ module Dagger
   class Graph < Tangle::DAG
     DEFAULT_MIXINS = [Tangle::Mixin::Directory].freeze
 
-    def self.load(dir)
+    def self.load(dir, cached: false)
+      @cached = cached
       dir_options = {
         root: File.realpath(dir),
         loaders: %i[symlink_loader directory_loader keytree_loader]
@@ -28,6 +29,10 @@ module Dagger
       vertices.select { |vertex| yield(self, vertex) }
     end
 
+    def cached?
+      !(!@cached)
+    end
+
     protected
 
     def symlink_loader(path:, parent:, lstat:, **)
@@ -42,7 +47,7 @@ module Dagger
       return unless lstat.directory?
 
       path = local_path(path)
-      vertex = Vertex.new(path)
+      vertex = Vertex.new(path, cached: cached?)
       add_vertex(vertex)
       return true if parent.nil?
       parent = local_path(parent)
