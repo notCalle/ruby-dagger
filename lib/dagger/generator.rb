@@ -8,11 +8,14 @@ module Dagger
   # +Context+ key access:
   # :call-seq:
   #   dictionary => Hash-like with current key lookup dictionary.
-  #   rule_chain => Hash of remaining rules in the current chain.
   #
   # +Context+ value update:
   # :call-seq:
   #   update(key: value, ...)
+  #
+  # Stop the processing of current rule chain:
+  # :call-seq:
+  #   stop
   #
   # Wrap non-enumerable objects in an +Array+
   # :call-seq:
@@ -37,7 +40,17 @@ module Dagger
 
     private
 
-    delegate %i[dictionary rule_chain] => :@context
+    delegate %i[dictionary] => :@context
+
+    # Stop processing the current rule chain
+    #
+    # :call-seq:
+    #   stop
+    #
+    # Raises +StopIteration+
+    def stop
+      raise StopIteration
+    end
 
     # Update context attributes with new values
     #
