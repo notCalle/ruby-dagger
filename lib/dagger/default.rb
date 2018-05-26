@@ -57,9 +57,7 @@ module Dagger
     def process(key)
       catch do |ball|
         default_rules(key).each do |rule|
-          context = Context.new(result: ball,
-                                dictionary: @dictionary,
-                                rule_chain: rule.clone)
+          context = Context.new(result: ball, dictionary: @dictionary)
 
           process_rule_chain(rule, context)
         end

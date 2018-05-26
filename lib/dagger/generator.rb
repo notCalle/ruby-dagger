@@ -8,7 +8,6 @@ module Dagger
   # +Context+ key access:
   # :call-seq:
   #   dictionary => Hash-like with current key lookup dictionary.
-  #   rule_chain => Hash of remaining rules in the current chain.
   #
   # +Context+ value update:
   # :call-seq:
@@ -37,7 +36,7 @@ module Dagger
 
     private
 
-    delegate %i[dictionary rule_chain] => :@context
+    delegate %i[dictionary] => :@context
 
     # Update context attributes with new values
     #
