@@ -54,6 +54,19 @@ module Dagger
       end
       forest.flatten.delete_if { |key, _| key.to_s =~ /^_/ }
     end
+
+    def to_h
+      flatten.to_h
+    end
+
+    def to_yaml
+      flatten.to_yaml
+    end
+
+    def to_json
+      flatten.to_json
+    end
+
     alias to_s name
 
     private
