@@ -4,8 +4,8 @@ require_relative 'default'
 module Dagger
   # Vertex class for Dagger, representing a filesystem directory
   class Vertex
-    def initialize(name)
-      @keys = initialize_forest(Default.proc(self))
+    def initialize(name, cached: false)
+      @keys = initialize_forest(cached)
 
       meta['_meta.name'] = name
       meta['_meta.basename'] = File.basename(name)
@@ -43,11 +43,7 @@ module Dagger
     end
 
     def flatten
-      default_proc = Default.proc(self,
-                                  cached: true,
-                                  fallback: @inherited)
-
-      forest = initialize_forest(default_proc)
+      forest = initialize_forest(true)
 
       forest.flatten.each_key do |key|
         forest[key[1..-1]] if key.prefix?(KeyTree::Path['_default'])
@@ -71,14 +67,20 @@ module Dagger
 
     private
 
-    def initialize_forest(default_proc)
+    def initialize_forest(cached)
       forest = KeyTree::Forest.new
       forest << @meta ||= KeyTree::Tree.new
       forest << @local ||= KeyTree::Forest.new
       forest << default = KeyTree::Forest.new
       forest << @inherited ||= KeyTree::Forest.new
-      default << KeyTree::Tree.new(&default_proc)
+      default << initialize_default_tree(cached)
       forest
+    end
+
+    def initialize_default_tree(cached)
+      default_args = cached ? { cached: true, fallback: @inherited } : {}
+      default_proc = Default.proc(self, default_args)
+      KeyTree::Tree.new(&default_proc)
     end
   end
 end
