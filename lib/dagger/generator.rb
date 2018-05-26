@@ -13,6 +13,10 @@ module Dagger
   # :call-seq:
   #   update(key: value, ...)
   #
+  # Stop the processing of current rule chain:
+  # :call-seq:
+  #   stop
+  #
   # Wrap non-enumerable objects in an +Array+
   # :call-seq:
   #   enumerable(value) => value || [value]
@@ -37,6 +41,16 @@ module Dagger
     private
 
     delegate %i[dictionary] => :@context
+
+    # Stop processing the current rule chain
+    #
+    # :call-seq:
+    #   stop
+    #
+    # Raises +StopIteration+
+    def stop
+      raise StopIteration
+    end
 
     # Update context attributes with new values
     #
