@@ -5,7 +5,7 @@ module Dagger
   # Vertex class for Dagger, representing a filesystem directory
   class Vertex
     def initialize(name)
-      initialize_forest
+      @keys = initialize_forest(Default.proc(self))
 
       meta['_meta.name'] = name
       meta['_meta.basename'] = File.basename(name)
@@ -46,14 +46,14 @@ module Dagger
 
     private
 
-    def initialize_forest
-      @keys = KeyTree::Forest.new
-      @keys << @meta = KeyTree::Tree.new
-      @keys << @local = KeyTree::Forest.new
-      @keys << @default = KeyTree::Forest.new
-      @keys << @inherited = KeyTree::Forest.new
-      default_proc = Default.new(self).default_proc
-      @default << KeyTree::Tree.new(&default_proc)
+    def initialize_forest(default_proc)
+      forest = KeyTree::Forest.new
+      forest << @meta ||= KeyTree::Tree.new
+      forest << @local ||= KeyTree::Forest.new
+      forest << default = KeyTree::Forest.new
+      forest << @inherited ||= KeyTree::Forest.new
+      default << KeyTree::Tree.new(&default_proc)
+      forest
     end
   end
 end
