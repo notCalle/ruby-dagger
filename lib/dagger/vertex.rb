@@ -42,6 +42,18 @@ module Dagger
       inherited.reject! { |tree| tree.equal?(edge.tail.keys) }
     end
 
+    def flatten
+      default_proc = Default.proc(self,
+                                  cached: true,
+                                  fallback: @inherited)
+
+      forest = initialize_forest(default_proc)
+
+      forest.flatten.each_key do |key|
+        forest[key[1..-1]] if key.prefix?(KeyTree::Path['_default'])
+      end
+      forest.flatten.delete_if { |key, _| key.to_s =~ /^_/ }
+    end
     alias to_s name
 
     private
