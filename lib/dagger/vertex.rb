@@ -42,25 +42,32 @@ module Dagger
       inherited.reject! { |tree| tree.equal?(edge.tail.keys) }
     end
 
-    def flatten
+    def flatten(cleanup: false)
       forest = initialize_forest(true)
 
       forest.flatten.each_key do |key|
         forest[key[1..-1]] if key.prefix?(KeyTree::Path['_default'])
       end
-      forest.flatten.delete_if { |key, _| key.to_s =~ /^_/ }
+
+      return flattened = forest.flatten unless cleanup
+      flattened.delete_if { |key, _| key.to_s =~ /^_/ }
+    end
+
+    def flatten!
+      flattened = flatten
+      @keys.clear << flattened
     end
 
     def to_h
-      flatten.to_h
+      flatten(cleanup: true).to_h
     end
 
     def to_yaml
-      flatten.to_yaml
+      flatten(cleanup: true).to_yaml
     end
 
     def to_json
-      flatten.to_json
+      flatten(cleanup: true).to_json
     end
 
     alias to_s name
