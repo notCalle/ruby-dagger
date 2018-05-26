@@ -33,6 +33,11 @@ module Dagger
       !(!@cached)
     end
 
+    def flatten!
+      topological_ordering.each(&:flatten!)
+      self
+    end
+
     protected
 
     def symlink_loader(path:, parent:, lstat:, **)
