@@ -1,31 +1,44 @@
+# frozen_string_literal: true
+
 require 'key_tree'
+require 'key_tree/refinements'
 require_relative 'default'
 
 module Dagger
   # Vertex class for Dagger, representing a filesystem directory
+  #
+  #   dir/
+  #     file.yaml         => keytree
+  #     prefix@file.yaml  => prefix.keytree
+  #
+  #   +forest+ = [ +meta+       = {},
+  #                +local+        [ { file_keys }, ... ],
+  #                               [ { Default } ],
+  #                +inherited+  = [ [ parent ], ... ]
+  #              ]
+  #
   class Vertex
-    def initialize(name, cached: false)
-      @keys = initialize_forest(cached)
+    using KeyTree::Refinements
 
+    def initialize(name, cached: false)
+      @forest = initialize_forest(cached)
       meta['_meta.name'] = name
       meta['_meta.basename'] = File.basename(name)
       meta['_meta.dirname'] = File.dirname(name)
     end
 
-    attr_reader :inherited, :keys, :local, :meta
-
     def name
-      meta['_meta.name']
+      @forest['_meta.name']
     end
 
     def [](key)
-      key = KeyTree::Path[key] unless key.is_a? KeyTree::Path
-      return inherited[key[1..-1]] if key.prefix?(KeyTree::Path['^'])
-      keys[key]
+      key = key.to_key_path
+      inherited[key.drop(1)] if key.prefix?('^')
+      forest[key]
     end
 
-    def fetch(key)
-      keys.fetch(key)
+    def fetch(key, &block)
+      forest.fetch(key, &block)
     end
 
     def <<(keytree)
@@ -34,28 +47,32 @@ module Dagger
 
     def edge_added(edge)
       return unless edge.head?(self)
-      inherited << edge.tail.keys
+      inherited << edge.tail.forest
     end
 
     def edge_removed(edge)
       return unless edge.head?(self)
-      inherited.reject! { |tree| tree.equal?(edge.tail.keys) }
+      inherited.reject! { |tree| tree.equal?(edge.tail.forest) }
     end
 
-    def flatten(cleanup: false)
+    def flatten(cleanup: true)
       forest = initialize_forest(true)
 
-      forest.flatten.each_key do |key|
-        forest[key[1..-1]] if key.prefix?(KeyTree::Path['_default'])
+      forest.key_paths.select { |key| key.prefix?('_default') }.each do |key|
+        forest[key.drop(1)]
       end
 
-      return flattened = forest.flatten unless cleanup
-      flattened.delete_if { |key, _| key.to_s =~ /^_/ }
+      flattened = forest.flatten
+      return flattened unless cleanup
+      flattened.to_h.delete_if { |key| key.to_s.start_with?('_') }
+      flattened
     end
 
     def flatten!
-      flattened = flatten
-      @keys.clear << flattened
+      flattened = flatten.freeze
+      @forest.clear << flattened
+      @forest.freeze
+      freeze
     end
 
     def to_h
@@ -72,7 +89,13 @@ module Dagger
 
     alias to_s name
 
+    protected
+
+    attr_reader :forest
+
     private
+
+    attr_reader :inherited, :local, :meta
 
     def initialize_forest(cached)
       forest = KeyTree::Forest.new

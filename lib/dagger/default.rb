@@ -1,10 +1,15 @@
+# frozen_string_literal: true
+
 require 'set'
+require 'key_tree/refinements'
 require_relative 'context'
 require_relative 'generator'
 
 module Dagger
   # Default value generator for a dictionary
   class Default
+    using KeyTree::Refinements
+
     def self.proc(*args)
       new(*args).default_proc
     end
@@ -22,7 +27,7 @@ module Dagger
       @dictionary = dictionary
       @cached = cached
       @fallback = fallback
-      @rule_prefix = KeyTree::Path[rule_prefix]
+      @rule_prefix = rule_prefix.to_key_path
       @default_proc = ->(tree, key) { generate(tree, key) }
       @locks = Set[]
     end
@@ -47,8 +52,7 @@ module Dagger
     # Raises a +KeyError+ if the default value cannot be generated.
     # Raises a +RuntimeError+ in case of a deadlock for +key+.
     def generate(tree, key)
-      key = KeyTree::Path[key] unless key.is_a? KeyTree::Path
-
+      key = key.to_key_path
       with_locked_key(key) { |locked_key| cached_value(tree, locked_key) }
     end
 
@@ -71,10 +75,8 @@ module Dagger
     #   cached_value(tree, key) => value || KeyError
     def cached_value(tree, key)
       result = process(key)
-    rescue KeyError
-      raise if @fallback.nil?
-      result = @fallback[key]
-      raise if result.nil?
+      return result unless result.nil?
+      result = @fallback&.[](key)
     ensure
       tree[key] = result if cached? && !result.nil?
     end
@@ -87,21 +89,20 @@ module Dagger
     #   yield => value || KeyError
     def process(key)
       catch do |ball|
-        default_rules(key).each do |rule|
-          context = Context.new(result: ball, dictionary: @dictionary)
-
+        default_rules(key)&.each do |rule|
+          context = Context.new(dictionary: @dictionary, result: ball)
           process_rule_chain(rule, context)
         end
-        raise KeyError, %(no rule succeeded for "#{key}")
+        nil
       end
     end
 
     # Return the default value generation rules for a +key+.
     #
     # :call-seq:
-    #   default_rules(key) => Array of Hash || KeyError
+    #   default_rules(key) => Array of Hash
     def default_rules(key)
-      @dictionary.fetch(@rule_prefix + key)
+      @dictionary.fetch(@rule_prefix + key) { nil }
     end
 
     # Process the methods in a rule chain
@@ -109,12 +110,13 @@ module Dagger
     # :call-seq:
     #   process_rule_chain(rule_chain, context)
     def process_rule_chain(rule_chain, context)
-      rule_chain.each do |key, arg|
-        klass = Dagger::Generate.const_get(camelize(key))
-        klass[context, arg, &->(value) { throw context.result, value }]
+      catch do |ball|
+        context.stop = ball
+        rule_chain.each do |key, arg|
+          klass = Dagger::Generate.const_get(camelize(key))
+          klass[context, arg, &->(value) { throw context.result, value }]
+        end
       end
-    rescue StopIteration
-      nil
     end
 
     # Convert snake_case to CamelCase

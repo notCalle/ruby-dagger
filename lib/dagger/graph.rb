@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tangle'
 require 'tangle/mixin/directory'
 require_relative 'vertex'
@@ -35,7 +37,7 @@ module Dagger
 
     def flatten!
       topological_ordering.each(&:flatten!)
-      self
+      freeze
     end
 
     protected

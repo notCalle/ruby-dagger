@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Dagger::Default do
   before :context do
     @graph = Dagger.load(fixture('inheritence'))
