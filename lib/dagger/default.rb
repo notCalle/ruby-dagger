@@ -14,17 +14,17 @@ module Dagger
       new(*args).default_proc
     end
 
-    # Initialize a default value generator for a +dictionary+
+    # Initialize a default value generator for a +vertex+
     #
     # :call-seq:
-    #   new(dictionary) => Dagger::Default
+    #   new(graph, vertex) => Dagger::Default
     #   new(*, cached: false)
     #   new(*, rule_prefix: '_default')
-    def initialize(dictionary,
+    def initialize(vertex,
                    cached: false,
                    fallback: nil,
                    rule_prefix: '_default')
-      @dictionary = dictionary
+      @vertex = vertex
       @cached = cached
       @fallback = fallback
       @rule_prefix = rule_prefix.to_key_path
@@ -90,7 +90,7 @@ module Dagger
     def process(key)
       catch do |ball|
         default_rules(key)&.each do |rule|
-          context = Context.new(dictionary: @dictionary, result: ball)
+          context = Context.new(dictionary: @vertex.to_key_wood, result: ball)
           process_rule_chain(rule, context)
         end
         nil
@@ -102,7 +102,7 @@ module Dagger
     # :call-seq:
     #   default_rules(key) => Array of Hash
     def default_rules(key)
-      @dictionary.fetch(@rule_prefix + key) { nil }
+      @vertex.to_key_wood.fetch(@rule_prefix + key) { nil }
     end
 
     # Process the methods in a rule chain
