@@ -60,6 +60,16 @@ module Dagger
       @inherited.reject! { |tree| tree.equal?(edge.tail.to_key_wood) }
     end
 
+    def added_to_graph(graph)
+      raise %(belongs another graph) if @graph&.!= graph
+      @graph = graph
+    end
+
+    def removed_from_graph(graph)
+      raise %(not part of graph) if @graph&.!= graph
+      @graph = nil
+    end
+
     def flatten(cleanup: true)
       forest = initialize_forest(true)
 
