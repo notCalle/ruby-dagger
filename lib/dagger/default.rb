@@ -90,7 +90,7 @@ module Dagger
     def process(key)
       catch do |ball|
         default_rules(key)&.each do |rule|
-          context = Context.new(dictionary: @vertex.to_key_wood, result: ball)
+          context = Context.new(dictionary: @vertex, result: ball)
           process_rule_chain(rule, context)
         end
         nil
