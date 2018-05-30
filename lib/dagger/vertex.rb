@@ -35,6 +35,7 @@ module Dagger
     def name
       @forest['_meta.name']
     end
+    alias to_s name
 
     def [](key)
       key = key.to_key_path
@@ -101,8 +102,6 @@ module Dagger
     def to_json
       flatten(cleanup: true).to_json
     end
-
-    alias to_s name
 
     private
 
