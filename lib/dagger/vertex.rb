@@ -22,9 +22,9 @@ module Dagger
 
     def initialize(name, cached: false)
       @forest = initialize_forest(cached)
-      meta['_meta.name'] = name
-      meta['_meta.basename'] = File.basename(name)
-      meta['_meta.dirname'] = File.dirname(name)
+      @meta['_meta.name'] = name
+      @meta['_meta.basename'] = File.basename(name)
+      @meta['_meta.dirname'] = File.dirname(name)
     end
 
     def to_key_forest
@@ -38,26 +38,26 @@ module Dagger
 
     def [](key)
       key = key.to_key_path
-      inherited[key.drop(1)] if key.prefix?('^')
-      forest[key]
+      @inherited[key.drop(1)] if key.prefix?('^')
+      @forest[key]
     end
 
     def fetch(key, &block)
-      forest.fetch(key, &block)
+      @forest.fetch(key, &block)
     end
 
     def <<(keytree)
-      local << keytree
+      @local << keytree
     end
 
     def edge_added(edge)
       return unless edge.head?(self)
-      inherited << edge.tail.forest
+      @inherited << edge.tail.to_key_wood
     end
 
     def edge_removed(edge)
       return unless edge.head?(self)
-      inherited.reject! { |tree| tree.equal?(edge.tail.forest) }
+      @inherited.reject! { |tree| tree.equal?(edge.tail.to_key_wood) }
     end
 
     def flatten(cleanup: true)
@@ -94,13 +94,7 @@ module Dagger
 
     alias to_s name
 
-    protected
-
-    attr_reader :forest
-
     private
-
-    attr_reader :inherited, :local, :meta
 
     def initialize_forest(cached)
       forest = KeyTree::Forest.new
