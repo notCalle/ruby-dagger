@@ -27,6 +27,11 @@ module Dagger
       meta['_meta.dirname'] = File.dirname(name)
     end
 
+    def to_key_forest
+      @forest
+    end
+    alias to_key_wood to_key_forest
+
     def name
       @forest['_meta.name']
     end
