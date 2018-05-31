@@ -43,8 +43,10 @@ module Dagger
       @forest[key]
     end
 
-    def fetch(key, &block)
-      @forest.fetch(key, &block)
+    def fetch(key, *default, &block)
+      key = key.to_key_path
+      @inherited.fetch(key.drop(1), *default, &block) if key.prefix?('^')
+      @forest.fetch(key, *default, &block)
     end
 
     def <<(keytree)
