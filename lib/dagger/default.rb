@@ -90,7 +90,9 @@ module Dagger
     def process(key)
       catch do |ball|
         default_rules(key)&.each do |rule|
-          context = Context.new(dictionary: @vertex, result: ball)
+          context = Context.new(dictionary: @vertex,
+                                result: ball,
+                                vertex: @vertex)
           process_rule_chain(rule, context)
         end
         nil
@@ -102,7 +104,8 @@ module Dagger
     # :call-seq:
     #   default_rules(key) => Array of Hash
     def default_rules(key)
-      @vertex.to_key_wood.fetch(@rule_prefix + key) { nil }
+      result = @vertex.fetch(@rule_prefix + key, nil)
+      result
     end
 
     # Process the methods in a rule chain

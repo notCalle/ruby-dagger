@@ -42,7 +42,7 @@ module Dagger
 
     private
 
-    delegate %i[dictionary] => :@context
+    delegate %i[dictionary vertex] => :@context
 
     # Stop processing the current rule chain
     #
