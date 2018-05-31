@@ -3,16 +3,11 @@
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-begin
-  require 'git-version-bump'
-  GIT_VERSION = GVB.version.freeze
-rescue LoadError
-  GIT_VERSION = '0.0.0.UNDEF'
-end
+require 'dagger/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'ruby-dagger'
-  spec.version       = GIT_VERSION
+  spec.version       = Dagger::VERSION
   spec.authors       = ['Calle Englund']
   spec.email         = ['calle@discord.bofh.se']
 
