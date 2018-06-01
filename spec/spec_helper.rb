@@ -1,4 +1,9 @@
 require 'bundler/setup'
+require 'simplecov'
+SimpleCov.start do
+  add_filter %r{^/spec/}
+end
+
 require 'dagger'
 
 Dir[File.join(__dir__, 'helpers', '*.rb')].each { |helper| load helper }
