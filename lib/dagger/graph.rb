@@ -7,8 +7,6 @@ require_relative 'vertex'
 module Dagger
   # Specialization of Tangle::DAG
   class Graph < Tangle::DAG
-    DEFAULT_MIXINS = [Tangle::Mixin::Directory].freeze
-
     def self.load(dir, cached: false)
       @cached = cached
       dir_options = {
@@ -18,7 +16,7 @@ module Dagger
       new(directory: dir_options)
     end
 
-    def initialize(*)
+    def initialize(mixins: [Tangle::Mixin::Directory], **)
       @deferred_edges = []
       super
       @deferred_edges.each do |args|
