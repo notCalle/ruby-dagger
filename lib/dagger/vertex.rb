@@ -86,13 +86,6 @@ module Dagger
       flattened
     end
 
-    def flatten!
-      flattened = flatten.freeze
-      @forest.clear << flattened
-      @forest.freeze
-      freeze
-    end
-
     def to_h
       flatten(cleanup: true).to_h
     end
