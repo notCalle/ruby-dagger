@@ -13,7 +13,7 @@ module Dagger
         root: File.realpath(dir),
         loaders: %i[symlink_loader directory_loader keytree_loader]
       }
-      new(directory: dir_options)
+      new(directory: dir_options, currify: true)
     end
 
     def initialize(mixins: [Tangle::Mixin::Directory], **)
