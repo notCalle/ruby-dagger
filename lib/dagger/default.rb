@@ -1,20 +1,33 @@
+# frozen_string_literal: true
+
 require 'set'
+require 'key_tree/refinements'
 require_relative 'context'
 require_relative 'generator'
 
 module Dagger
   # Default value generator for a dictionary
   class Default
-    # Initialize a default value generator for a +dictionary+
+    using KeyTree::Refinements
+
+    def self.proc(*args)
+      new(*args).default_proc
+    end
+
+    # Initialize a default value generator for a +vertex+
     #
     # :call-seq:
-    #   new(dictionary) => Dagger::Default
+    #   new(graph, vertex) => Dagger::Default
     #   new(*, cached: false)
     #   new(*, rule_prefix: '_default')
-    def initialize(dictionary, cached: false, rule_prefix: '_default')
-      @dictionary = dictionary
+    def initialize(vertex,
+                   cached: false,
+                   fallback: nil,
+                   rule_prefix: '_default')
+      @vertex = vertex
       @cached = cached
-      @rule_prefix = KeyTree::Path[rule_prefix]
+      @fallback = fallback
+      @rule_prefix = rule_prefix.to_key_path
       @default_proc = ->(tree, key) { generate(tree, key) }
       @locks = Set[]
     end
@@ -32,21 +45,41 @@ module Dagger
 
     # Generate a default value for a +key+, possibly caching the
     # result in the +tree+.
-    # Raises a +KeyError+ f the default value cannot be generated.
     #
     # :call-seq:
     #   generate(tree, key) => value || KeyError
+    #
+    # Raises a +KeyError+ if the default value cannot be generated.
+    # Raises a +RuntimeError+ in case of a deadlock for +key+.
     def generate(tree, key)
-      key = KeyTree::Path[key] unless key.is_a? KeyTree::Path
-      raise %(deadlock detected: "#{key}") unless @locks.add?(key)
+      key = key.to_key_path
+      with_locked_key(key) { |locked_key| cached_value(tree, locked_key) }
+    end
 
-      return result = process(key) unless cached?
-      tree[key] = result unless result.nil?
+    private
+
+    # Process a +block+ with mutex for +key+
+    #
+    # :call-seq:
+    #   with_locked_key(key &->(locked_key)) => result
+    def with_locked_key(key)
+      raise %(deadlock detected: "#{key}") unless @locks.add?(key)
+      yield(key)
     ensure
       @locks.delete(key)
     end
 
-    private
+    # Return the default value for +key+, caching it in +tree+ if enabled.
+    #
+    # :call-seq:
+    #   cached_value(tree, key) => value || KeyError
+    def cached_value(tree, key)
+      result = process(key)
+      return result unless result.nil?
+      result = @fallback&.[](key)
+    ensure
+      tree[key] = result if cached? && !result.nil?
+    end
 
     # Process value generation rules for +context+, raising a +KeyError+
     # if a value could not be generated. Catches :result thows from rule
@@ -56,21 +89,23 @@ module Dagger
     #   yield => value || KeyError
     def process(key)
       catch do |ball|
-        default_rules(key).each do |rule|
-          context = Context.new(result: ball, dictionary: @dictionary)
-
+        default_rules(key)&.each do |rule|
+          context = Context.new(dictionary: @vertex,
+                                result: ball,
+                                vertex: @vertex)
           process_rule_chain(rule, context)
         end
-        raise KeyError, %(no rule succeeded for "#{key}")
+        nil
       end
     end
 
     # Return the default value generation rules for a +key+.
     #
     # :call-seq:
-    #   default_rules(key) => Array of Hash || KeyError
+    #   default_rules(key) => Array of Hash
     def default_rules(key)
-      @dictionary.fetch(@rule_prefix + key)
+      result = @vertex.fetch(@rule_prefix + key, nil)
+      result
     end
 
     # Process the methods in a rule chain
@@ -78,12 +113,13 @@ module Dagger
     # :call-seq:
     #   process_rule_chain(rule_chain, context)
     def process_rule_chain(rule_chain, context)
-      rule_chain.each do |key, arg|
-        klass = Dagger::Generate.const_get(camelize(key))
-        klass[context, arg, &->(value) { throw context.result, value }]
+      catch do |ball|
+        context.stop = ball
+        rule_chain.each do |key, arg|
+          klass = Dagger::Generate.const_get(camelize(key))
+          klass[context, arg, &->(value) { throw context.result, value }]
+        end
       end
-    rescue StopIteration
-      nil
     end
 
     # Convert snake_case to CamelCase

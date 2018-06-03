@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tangle'
 require 'tangle/mixin/directory'
 require_relative 'vertex'
@@ -5,9 +7,8 @@ require_relative 'vertex'
 module Dagger
   # Specialization of Tangle::DAG
   class Graph < Tangle::DAG
-    DEFAULT_MIXINS = [Tangle::Mixin::Directory].freeze
-
-    def self.load(dir)
+    def self.load(dir, cached: false)
+      @cached = cached
       dir_options = {
         root: File.realpath(dir),
         loaders: %i[symlink_loader directory_loader keytree_loader]
@@ -15,7 +16,7 @@ module Dagger
       new(directory: dir_options)
     end
 
-    def initialize(*)
+    def initialize(mixins: [Tangle::Mixin::Directory], **)
       @deferred_edges = []
       super
       @deferred_edges.each do |args|
@@ -26,6 +27,10 @@ module Dagger
 
     def select(&_filter)
       vertices.select { |vertex| yield(self, vertex) }
+    end
+
+    def cached?
+      !(!@cached)
     end
 
     protected
@@ -42,7 +47,7 @@ module Dagger
       return unless lstat.directory?
 
       path = local_path(path)
-      vertex = Vertex.new(path)
+      vertex = Vertex.new(path, cached: cached?)
       add_vertex(vertex)
       return true if parent.nil?
       parent = local_path(parent)
