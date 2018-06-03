@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../generator'
 
 module Dagger
@@ -12,21 +14,9 @@ module Dagger
     class String < Dagger::Generator
       def process(strings)
         enumerable(strings).each do |fmtstr|
-          result = format_string(fmtstr, dictionary)
+          result = format_string(fmtstr)
           yield result unless result.nil?
         end
-      end
-
-      private
-
-      # Format a +string+ with values from a +dictionary+
-      #
-      # :call-seq:
-      #   format_string(string, dictionary)
-      def format_string(string, dictionary)
-        Kernel.format(string, Hash.new { |_, key| dictionary[key] })
-      rescue KeyError
-        nil
       end
     end
   end

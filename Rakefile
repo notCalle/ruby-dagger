@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 require 'bundler/gem_tasks'
 
@@ -11,4 +13,4 @@ desc 'Run RSpec'
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
 
-task default: %i[rubocop spec]
+task default: %i[spec rubocop]

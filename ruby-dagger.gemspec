@@ -1,17 +1,13 @@
+# frozen_string_literal: true
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-begin
-  require 'git-version-bump'
-  GIT_VERSION = GVB.version.freeze
-rescue LoadError
-  GIT_VERSION = '0.0.0.UNDEF'.freeze
-end
+require 'dagger/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'ruby-dagger'
-  spec.version       = GIT_VERSION
+  spec.version       = Dagger::VERSION
   spec.authors       = ['Calle Englund']
   spec.email         = ['calle@discord.bofh.se']
 
@@ -27,14 +23,16 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.platform = Gem::Platform::RUBY
-  spec.required_ruby_version = '~> 2.1'
+  spec.required_ruby_version = '~> 2.3'
 
-  spec.add_dependency 'key_tree', '~> 0.5'
-  spec.add_dependency 'tangle', '~> 0.9'
+  spec.add_dependency 'key_tree', '~> 0.6'
+  spec.add_dependency 'tangle', '~> 0.10'
 
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'git-version-bump', '~> 0.15'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.52'
+  spec.add_development_dependency 'ruby-prof', '~> 0.17'
+  spec.add_development_dependency 'simplecov', '~> 0.16'
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 module Dagger
@@ -40,16 +42,14 @@ module Dagger
 
     private
 
-    delegate %i[dictionary] => :@context
+    delegate %i[dictionary vertex] => :@context
 
     # Stop processing the current rule chain
     #
     # :call-seq:
     #   stop
-    #
-    # Raises +StopIteration+
     def stop
-      raise StopIteration
+      throw @context.stop
     end
 
     # Update context attributes with new values
@@ -66,6 +66,20 @@ module Dagger
     #   enumerable(value) => value || [value]
     def enumerable(value)
       value.respond_to?(:each) ? value : [value]
+    end
+
+    # Format a +string+ with values from a +dictionary+
+    #
+    # :call-seq:
+    #   format(string)
+    def format_string(string)
+      hash = Hash.new do |_, key|
+        result = @context.dictionary[key]
+        next result unless result.nil?
+        return nil
+      end
+
+      format(string, hash)
     end
   end
 end
