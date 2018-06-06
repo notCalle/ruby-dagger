@@ -85,4 +85,4 @@ module Dagger
   end
 end
 
-Dir[__dir__ + '/generator/*.rb'].each { |file| load(file) }
+Dir[__dir__ + '/generate/*.rb'].each { |file| load(file) }

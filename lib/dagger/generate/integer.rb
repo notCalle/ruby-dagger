@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../generator'
+require_relative '../numeric_generator'
 
 module Dagger
   module Generate
@@ -13,9 +13,9 @@ module Dagger
     #     - ...
     #   - integer:
     #       accumulate:
-    class Integer < Numeric
+    class Integer < NumericGenerator
       def process(strings, &yielder)
-        super(string, :to_i, &yielder)
+        super(strings, :to_i, &yielder)
       end
     end
   end
