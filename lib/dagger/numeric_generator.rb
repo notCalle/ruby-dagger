@@ -34,6 +34,29 @@ module Dagger
           return result unless result.nil?
         end
       end
+
+      def numeric_sum(args)
+        args.sum
+      end
+
+      def numeric_product(args)
+        args.reduce(:*)
+      end
+
+      def numeric_arithmetic_mean(args)
+        return if args.empty?
+        numeric_sum(args) / args.length
+      end
+
+      def numeric_geometric_mean(args)
+        return if args.empty?
+        numeric_product(args)**(1.0 / args.length)
+      end
+
+      def numeric_harmonic_mean(args)
+        return if args.empty?
+        args.length / args.map { |n| 1.0 / n }.sum
+      end
     end
   end
 end
