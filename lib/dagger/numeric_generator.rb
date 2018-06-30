@@ -17,11 +17,21 @@ module Dagger
 
       def process_recurse(arg)
         case arg
+        when Hash
+          process_hash(arg)
         when ::String
           str = format_string(arg)
           from_s(str) unless str.nil?
         else
           from_s(arg)
+        end
+      end
+
+      def process_hash(hash)
+        hash.each do |key, args|
+          args = enumerable(args).map { |arg| process_recurse(arg) }
+          result = send("numeric_#{key}", args.delete(nil))
+          return result unless result.nil?
         end
       end
     end
