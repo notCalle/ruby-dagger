@@ -12,8 +12,10 @@ module Dagger
     #     - "#{key}"
     #     - ...
     class Float < NumericGenerator
-      def process(strings, &yielder)
-        super(strings, :to_f, &yielder)
+      private
+
+      def from_s(string)
+        string.to_f
       end
     end
   end

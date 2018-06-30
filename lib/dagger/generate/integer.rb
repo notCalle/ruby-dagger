@@ -14,8 +14,10 @@ module Dagger
     #   - integer:
     #       accumulate:
     class Integer < NumericGenerator
-      def process(strings, &yielder)
-        super(strings, :to_i, &yielder)
+      private
+
+      def from_s(string)
+        string.to_i
       end
     end
   end
