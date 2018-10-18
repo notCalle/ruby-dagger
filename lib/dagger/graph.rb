@@ -50,6 +50,7 @@ module Dagger
       vertex = Vertex.new(path, cached: cached?)
       add_vertex(vertex)
       return true if parent.nil?
+
       parent = local_path(parent)
       defer_edge(parent, path)
     end
@@ -67,6 +68,7 @@ module Dagger
 
       result = path.delete_prefix(root_directory)
       return '/' if result.empty?
+
       result
     end
 
