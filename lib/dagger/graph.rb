@@ -7,16 +7,16 @@ require_relative 'vertex'
 module Dagger
   # Specialization of Tangle::DAG
   class Graph < Tangle::DAG
-    def self.load(dir, cached: false)
-      @cached = cached
+    def self.load(dir, **kwargs)
       dir_options = {
         root: File.realpath(dir),
         loaders: %i[symlink_loader directory_loader keytree_loader]
       }
-      new(directory: dir_options, currify: true)
+      new(directory: dir_options, currify: true, **kwargs)
     end
 
-    def initialize(mixins: [Tangle::Mixin::Directory], **)
+    def initialize(mixins: [Tangle::Mixin::Directory], cached: false, **)
+      @cached = cached
       @deferred_edges = []
       super
       @deferred_edges.each do |args|
