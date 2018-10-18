@@ -64,6 +64,7 @@ module Dagger
     #   with_locked_key(key &->(locked_key)) => result
     def with_locked_key(key)
       raise %(deadlock detected: "#{key}") unless @locks.add?(key)
+
       yield(key)
     ensure
       @locks.delete(key)
@@ -76,6 +77,7 @@ module Dagger
     def cached_value(tree, key)
       result = process(key)
       return result unless result.nil?
+
       result = @fallback&.[](key)
     ensure
       tree[key] = result if cached? && !result.nil?
