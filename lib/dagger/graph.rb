@@ -7,12 +7,35 @@ require_relative 'vertex'
 module Dagger
   # Specialization of Tangle::DAG
   class Graph < Tangle::DAG
-    def self.load(dir, **kwargs)
-      dir_options = {
-        root: File.realpath(dir),
-        loaders: %i[symlink_loader directory_loader keytree_loader]
-      }
-      new(directory: dir_options, currify: true, **kwargs)
+    class << self
+      using KeyTree::Refine::DeepHash
+
+      def load(dir = '.', **kwargs)
+        kwargs[:directory] = {
+          root: Pathname.new(dir),
+          loaders: %i[symlink_loader directory_loader keytree_loader]
+        }
+        merge_configfile_options!(kwargs)
+        new(currify: true, **kwargs)
+      end
+
+      private
+
+      def merge_configfile_options!(options)
+        dir_options = options.fetch(:directory)
+        root = dir_options.fetch(:root)
+        cfgfile = root / '.dagger.yaml'
+
+        options.deep_merge! load_config(cfgfile) if cfgfile.file?
+        new_root = root / dir_options.fetch(:root)
+        raise "#{new_root} is outside root" unless path_inside?(new_root, root)
+
+        dir_options[:root] = new_root.to_s
+      end
+
+      def load_config(cfgfile)
+        YAML.load_file(cfgfile).deep_transform_keys!(&:to_sym)
+      end
     end
 
     def initialize(mixins: [], cached: false, **kwargs)
@@ -68,8 +91,12 @@ module Dagger
       end
     end
 
+    def path_inside?(path, root)
+      File.realpath(path, root).start_with? File.realpath(root)
+    end
+
     def local_path(path)
-      raise "#{path} outside root" unless path.start_with?(root_directory)
+      raise "#{path} is outside root" unless path_inside?(path, root_directory)
 
       result = path.delete_prefix(root_directory)
       return '/' if result.empty?
