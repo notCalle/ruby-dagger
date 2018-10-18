@@ -7,12 +7,36 @@ require_relative 'vertex'
 module Dagger
   # Specialization of Tangle::DAG
   class Graph < Tangle::DAG
-    def self.load(dir, **kwargs)
-      dir_options = {
-        root: File.realpath(dir),
-        loaders: %i[symlink_loader directory_loader keytree_loader]
-      }
-      new(directory: dir_options, currify: true, **kwargs)
+    class << self
+      using KeyTree::Refine::DeepHash
+
+      def load(dir = '.', **kwargs)
+        kwargs[:directory] = {
+          root: dir,
+          loaders: %i[symlink_loader directory_loader keytree_loader]
+        }
+        merge_configfile_options!(kwargs)
+        new(currify: true, **kwargs)
+      end
+
+      private
+
+      def merge_configfile_options!(options)
+        dir_options = options.fetch(:directory)
+        root = dir_options.fetch(:root)
+        cfgfile = "#{root}/.dagger.yaml"
+
+        options.deep_merge! load_config(cfgfile) if File.exist?(cfgfile)
+        new_root = dir_options.fetch(:root)
+        new_real = File.realpath(new_root, root)
+        raise "#{new_root} is outside root" unless new_real.start_with?(File.realpath(root))
+
+        dir_options[:root] = new_real
+      end
+
+      def load_config(cfgfile)
+        YAML.load_file(cfgfile).deep_transform_keys!(&:to_sym)
+      end
     end
 
     def initialize(mixins: [], cached: false, **kwargs)
