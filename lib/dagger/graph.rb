@@ -15,14 +15,12 @@ module Dagger
       new(directory: dir_options, currify: true, **kwargs)
     end
 
-    def initialize(mixins: [Tangle::Mixin::Directory], cached: false, **)
+    def initialize(mixins: [], cached: false, **kwargs)
       @cached = cached
       @deferred_edges = []
-      super
-      @deferred_edges.each do |args|
-        *args, kwargs = args
-        add_edge(*args.map { |name| fetch(name) }, **kwargs)
-      end
+
+      super(mixins: [Tangle::Mixin::Directory] + mixins, **kwargs)
+      initialize_deferred
     end
 
     def select(&_filter)
@@ -62,6 +60,13 @@ module Dagger
     end
 
     private
+
+    def initialize_deferred
+      @deferred_edges.each do |args|
+        *args, kwargs = args
+        add_edge(*args.map { |name| fetch(name) }, **kwargs)
+      end
+    end
 
     def local_path(path)
       raise "#{path} outside root" unless path.start_with?(root_directory)
