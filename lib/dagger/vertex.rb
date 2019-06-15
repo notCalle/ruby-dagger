@@ -99,8 +99,8 @@ module Dagger
       flatten(cleanup: true).to_yaml
     end
 
-    def to_json
-      flatten(cleanup: true).to_json
+    def to_json(*args)
+      flatten(cleanup: true).to_json(*args)
     end
 
     private
