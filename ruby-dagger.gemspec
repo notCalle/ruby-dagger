@@ -7,6 +7,7 @@ require 'dagger/version'
 
 dev_deps = {
   'bundler' => '~> 2.0',
+  'codecov' => '~> 0.1',
   'git-version-bump' => '~> 0.15',
   'pry' => '~> 0.11',
   'rake' => '~> 10.0',
