@@ -45,16 +45,19 @@ module Dagger
 
       def numeric_arithmetic_mean(args)
         return if args.empty?
+
         numeric_sum(args) / args.length
       end
 
       def numeric_geometric_mean(args)
         return if args.empty?
+
         numeric_product(args)**(1.0 / args.length)
       end
 
       def numeric_harmonic_mean(args)
         return if args.empty?
+
         args.length / args.map { |n| 1.0 / n }.sum
       end
     end
