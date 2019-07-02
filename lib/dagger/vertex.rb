@@ -39,13 +39,15 @@ module Dagger
 
     def [](key)
       key = key.to_key_path
-      @inherited[key.drop(1)] if key.prefix?('^')
+      return @inherited[key.drop(1)] if key.prefix?('^')
+
       @forest[key]
     end
 
     def fetch(key, *default, &block)
       key = key.to_key_path
-      @inherited.fetch(key.drop(1), *default, &block) if key.prefix?('^')
+      return @inherited.fetch(key.drop(1), *default, &block) if key.prefix?('^')
+
       @forest.fetch(key, *default, &block)
     end
 
