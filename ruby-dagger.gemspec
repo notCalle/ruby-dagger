@@ -5,6 +5,18 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'dagger/version'
 
+dev_deps = {
+  'bundler' => '~> 2.0',
+  'codecov' => '~> 0.1',
+  'git-version-bump' => '~> 0.15',
+  'pry' => '~> 0.11',
+  'rake' => '~> 10.0',
+  'rspec' => '~> 3.0',
+  'rubocop' => '~> 0.57',
+  'ruby-prof' => '~> 0.17',
+  'simplecov' => '~> 0.16'
+}
+
 Gem::Specification.new do |spec|
   spec.name          = 'ruby-dagger'
   spec.version       = Dagger::VERSION
@@ -28,11 +40,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'key_tree', '~> 0.6'
   spec.add_dependency 'tangle', '~> 0.10'
 
-  spec.add_development_dependency 'bundler', '~> 1.16'
-  spec.add_development_dependency 'git-version-bump', '~> 0.15'
-  spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'rubocop', '~> 0.52'
-  spec.add_development_dependency 'ruby-prof', '~> 0.17'
-  spec.add_development_dependency 'simplecov', '~> 0.16'
+  dev_deps.each { |d| spec.add_development_dependency(*d) }
 end

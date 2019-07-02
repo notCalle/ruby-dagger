@@ -1,4 +1,7 @@
-[![Gem Version](https://badge.fury.io/rb/ruby-dagger.svg)](https://badge.fury.io/rb/ruby-dagger) [![Maintainability](https://api.codeclimate.com/v1/badges/4038215eb129292a826d/maintainability)](https://codeclimate.com/github/notCalle/ruby-dagger/maintainability)
+[![Gem Version](https://badge.fury.io/rb/ruby-dagger.svg)](https://badge.fury.io/rb/ruby-dagger)
+[![Maintainability](https://api.codeclimate.com/v1/badges/4038215eb129292a826d/maintainability)](https://codeclimate.com/github/notCalle/ruby-dagger/maintainability)
+[![codecov](https://codecov.io/gh/notCalle/ruby-dagger/branch/master/graph/badge.svg)](https://codecov.io/gh/notCalle/ruby-dagger)
+[![Build Status](https://dev.azure.com/notCalle/GitHub%20CI/_apis/build/status/notCalle.ruby-tangle)](https://dev.azure.com/notCalle/GitHub%20CI/_build/latest?definitionId=2)
 
 # Dagger
 

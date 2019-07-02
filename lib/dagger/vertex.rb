@@ -57,21 +57,25 @@ module Dagger
 
     def edge_added(edge)
       return unless edge.head?(self)
+
       @inherited << edge.tail.to_key_wood
     end
 
     def edge_removed(edge)
       return unless edge.head?(self)
+
       @inherited.reject! { |tree| tree.equal?(edge.tail.to_key_wood) }
     end
 
     def added_to_graph(graph)
       raise %(belongs another graph) if @graph&.!= graph
+
       @graph = graph
     end
 
     def removed_from_graph(graph)
       raise %(not part of graph) if @graph&.!= graph
+
       @graph = nil
     end
 
@@ -84,6 +88,7 @@ module Dagger
 
       flattened = forest.flatten
       return flattened unless cleanup
+
       flattened.to_h.delete_if { |key| key.to_s.start_with?('_') }
       flattened
     end
@@ -96,8 +101,8 @@ module Dagger
       flatten(cleanup: true).to_yaml
     end
 
-    def to_json
-      flatten(cleanup: true).to_json
+    def to_json(*args)
+      flatten(cleanup: true).to_json(*args)
     end
 
     private

@@ -38,6 +38,7 @@ module Dagger
         enumerable(regexps).each_with_object({}) do |regexp, matches|
           matchdata = ::Regexp.new(regexp).match(string)
           next if matchdata.nil?
+
           matches.merge!(matchdata.named_captures.transform_keys(&:to_sym))
         end
       end

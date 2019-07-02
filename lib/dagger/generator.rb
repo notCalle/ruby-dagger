@@ -76,6 +76,7 @@ module Dagger
       hash = Hash.new do |_, key|
         result = @context.dictionary[key]
         next result unless result.nil?
+
         return nil
       end
 
