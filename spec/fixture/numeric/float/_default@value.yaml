@@ -11,4 +11,17 @@ product:
   - float:
       product:
         - values: ^.values
+mean:
+  arithmetic:
+    - float:
+        arithmetic_mean:
+          - values: ^.values
+  geometric:
+    - float:
+        geometric_mean:
+          - values: ^.values
+  harmonic:
+    - float:
+        harmonic_mean:
+          - values: ^.values
 ...

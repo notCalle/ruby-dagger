@@ -16,4 +16,16 @@ RSpec.describe Dagger::Generate::Integer do
   it 'can calculate the product of a list of values' do
     expect(@graph['/integer']['product']).to eq 0
   end
+
+  it 'can calculate the arithmetic mean of a list of values' do
+    expect(@graph['/integer']['mean.arithmetic']).to eq 2
+  end
+
+  it 'can calculate the geometric mean of a list of values' do
+    expect(@graph['/integer']['mean.geometric']).to eq 0
+  end
+
+  it 'can calculate the harmonic mean of a list of values' do
+    expect(@graph['/integer']['mean.harmonic']).to eq 0
+  end
 end
