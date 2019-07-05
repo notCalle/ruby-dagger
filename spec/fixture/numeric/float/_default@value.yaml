@@ -7,4 +7,8 @@ sum:
         - values: ^.values
         - "%{^.value}"
         - 5.1
+product:
+  - float:
+      product:
+        - values: ^.values
 ...

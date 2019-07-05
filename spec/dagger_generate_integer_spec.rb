@@ -12,4 +12,8 @@ RSpec.describe Dagger::Generate::Integer do
   it 'can calculate the sum of a list of values' do
     expect(@graph['/integer']['sum']).to eq 14
   end
+
+  it 'can calculate the product of a list of values' do
+    expect(@graph['/integer']['product']).to eq 0
+  end
 end
