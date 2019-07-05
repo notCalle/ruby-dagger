@@ -1,0 +1,5 @@
+---
+directory:
+  root: ../graph
+  exclude_root: true
+...
