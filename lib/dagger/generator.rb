@@ -60,12 +60,12 @@ module Dagger
       kwargs.each { |key, value| @context[key] = value }
     end
 
-    # Make an array of a value unless it is already enumerable
+    # Make an array of a value unless it is already an array
     #
     # :call-seq:
-    #   enumerable(value) => value || [value]
-    def enumerable(value)
-      value.respond_to?(:each) ? value : [value]
+    #   array(value) => value || [value]
+    def array(value)
+      value.respond_to?(:to_ary) ? value : [value]
     end
 
     # Format a +string+ with values from a +dictionary+

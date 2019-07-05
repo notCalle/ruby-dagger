@@ -11,7 +11,7 @@ module Dagger
     #   - ...
     class RequireName < Dagger::Generator
       def process(regexps)
-        stop unless enumerable(regexps).any? do |regexp|
+        stop unless array(regexps).any? do |regexp|
           ::Regexp.new(regexp).match?(vertex.name)
         end
       end
