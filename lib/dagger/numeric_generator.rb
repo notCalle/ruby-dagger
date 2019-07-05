@@ -7,7 +7,7 @@ module Dagger
     # Abstract base for generating numeric values
     class NumericGenerator < Dagger::Generator
       def process(args)
-        enumerable(args).each do |arg|
+        array(args).each do |arg|
           result = process_recurse(arg)
           yield result unless result.nil?
         end
@@ -28,11 +28,30 @@ module Dagger
       end
 
       def process_hash(hash)
+        print(hash)
         hash.each do |key, args|
-          args = enumerable(args).map { |arg| process_recurse(arg) }
-          result = send("numeric_#{key}", args.delete(nil))
+          result = process_hash_item(key, args)
           return result unless result.nil?
         end
+      end
+
+      def process_hash_item(key, args)
+        case args
+        when ::String
+          send("numeric_#{key}", dictionary[args])
+        else
+          send("numeric_#{key}", process_args(args))
+        end
+      end
+
+      def process_args(args)
+        args = array(args).flat_map { |arg| process_recurse(arg) }
+        args.delete(nil)
+        args
+      end
+
+      def numeric_values(args)
+        args.map { |value| from_s(value) }
       end
 
       def numeric_sum(args)
