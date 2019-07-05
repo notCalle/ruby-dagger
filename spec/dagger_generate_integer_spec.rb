@@ -8,4 +8,8 @@ RSpec.describe Dagger::Generate::Integer do
   it 'provides default integer values using format strings' do
     expect(@graph['/integer']['value']).to eq 1
   end
+
+  it 'can calculate the sum of a list of values' do
+    expect(@graph['/integer']['sum']).to eq 14
+  end
 end

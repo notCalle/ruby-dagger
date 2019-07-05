@@ -1,4 +1,10 @@
 ---
 value:
   - integer: "%{^.value}"
+sum:
+  - integer:
+      sum:
+        - values: ^.values
+        - "%{^.value}"
+        - 5.1
 ...
