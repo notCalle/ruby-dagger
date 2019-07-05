@@ -13,7 +13,7 @@ module Dagger
     #       - ...
     class String < Dagger::Generator
       def process(strings)
-        enumerable(strings).each do |fmtstr|
+        array(strings).each do |fmtstr|
           result = format_string(fmtstr)
           yield result unless result.nil?
         end
