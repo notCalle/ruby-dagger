@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.3.1] - 2019-07-05
+
+### Fixed
+
+- There was a debug print statement in numeric default value generation
+
+
 ## [0.3.0] - 2019-07-05
 
 ### Added
@@ -28,10 +36,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to `#enum`, but are now based on `#to_ary`, to ensure that hashes are also
   wrapped.
 
+
 ## [Older]
 These releases have no change logs.
 
 
-[Unreleased]: https://github.com/notCalle/ruby-dagger/compare/v0.3.0..HEAD
+[Unreleased]: https://github.com/notCalle/ruby-dagger/compare/v0.3.1..HEAD
+[0.3.1]: https://github.com/notCalle/ruby-dagger/compare/v0.3.0..v0.3.1
 [0.3.0]: https://github.com/notCalle/ruby-dagger/compare/v0.2.1..v0.3.0
 [Older]: https://github.com/notCalle/ruby-dagger/releases/tag/v0.2.1
