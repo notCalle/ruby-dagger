@@ -1,0 +1,27 @@
+---
+value:
+  - integer: "%{^.value}"
+sum:
+  - integer:
+      sum:
+        - values: ^.values
+        - "%{^.value}"
+        - 5.1
+product:
+  - integer:
+      product:
+        - values: ^.values
+mean:
+  arithmetic:
+    - integer:
+        arithmetic_mean:
+          - values: ^.values
+  geometric:
+    - integer:
+        geometric_mean:
+          - values: ^.values
+  harmonic:
+    - integer:
+        harmonic_mean:
+          - values: ^.values
+...

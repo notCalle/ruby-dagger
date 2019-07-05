@@ -35,7 +35,7 @@ module Dagger
       def match_regexps(key, regexps)
         string = dictionary[key]
 
-        enumerable(regexps).each_with_object({}) do |regexp, matches|
+        array(regexps).each_with_object({}) do |regexp, matches|
           matchdata = ::Regexp.new(regexp).match(string)
           next if matchdata.nil?
 

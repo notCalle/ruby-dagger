@@ -14,7 +14,7 @@ module Dagger
       def process(keys)
         stop unless keys.any? do |key, regexps|
           string = dictionary[key]
-          enumerable(regexps).any? do |regexp|
+          array(regexps).any? do |regexp|
             ::Regexp.new(regexp).match?(string)
           end
         end
