@@ -28,7 +28,6 @@ module Dagger
       end
 
       def process_hash(hash)
-        print(hash)
         hash.each do |key, args|
           result = process_hash_item(key, args)
           return result unless result.nil?

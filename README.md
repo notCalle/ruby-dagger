@@ -26,6 +26,8 @@ spec/fixture/graph
     └── parent -> ../vertex1    # a.b = 2, c = 3
 ```
 
+See the [changelog](CHANGELOG.md) for recent changes.
+
 ## Installation
 
 Add this line to your application's Gemfile:
