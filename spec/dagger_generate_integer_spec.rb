@@ -10,7 +10,7 @@ RSpec.describe Dagger::Generate::Integer do
   end
 
   it 'can calculate the sum of a list of values' do
-    expect(@graph['/integer']['sum']).to eq 14
+    expect(@graph['/integer']['sum']).to eq 15
   end
 
   it 'can calculate the product of a list of values' do
@@ -18,7 +18,7 @@ RSpec.describe Dagger::Generate::Integer do
   end
 
   it 'can calculate the arithmetic mean of a list of values' do
-    expect(@graph['/integer']['mean.arithmetic']).to eq 2
+    expect(@graph['/integer']['mean.arithmetic']).to eq 3
   end
 
   it 'can calculate the geometric mean of a list of values' do

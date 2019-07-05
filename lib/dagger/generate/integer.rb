@@ -17,7 +17,7 @@ module Dagger
       private
 
       def from_s(string)
-        string.to_i
+        string.to_f.round
       end
     end
   end
