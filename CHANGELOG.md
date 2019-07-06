@@ -4,9 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased]
 
-- Update `bundler` development dependency for CVE-2021-43809
+### Added
+
+- Configuration is loaded from `#{dir}/.dagger.yaml`, when it exists.
+  Options are merged into the kwargs when calling `Dagger::Graph::new`.
+
+  To load the actual graph from `#{dir}/subdir`, excluded from the graph:
+  ```yaml
+  directory:
+    root: subdir
+    exclude_root: true
+  ```
+
+### Changed
+
+- Updated `bundler` development dependency for CVE-2021-43809
+
 
 ## [0.4.0] - 2021-05-30
 
