@@ -85,7 +85,7 @@ module Dagger
       forest = initialize_forest(true)
 
       forest.key_paths.select { |key| key.prefix?('_default') }.each do |key|
-        forest[key.drop(1)]
+        forest[key.drop('_default')]
       end
 
       flattened = forest.flatten
