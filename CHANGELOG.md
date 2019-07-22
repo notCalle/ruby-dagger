@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.3.3] - 2019-07-22
+
+### Fixed
+
+- When using the `_default.key` syntax to fetch to generate default values,
+  the prefix was dropped using the `key_tree ~>0.5` api (inherited from
+  Array#drop) instead of the proper `key_tree ~>0.6` api that takes the prefix
+  to drop.
+
+
 ## [0.3.2] - 2019-07-16
 
 ### Fixed
@@ -50,7 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 These releases have no change logs.
 
 
-[Unreleased]: https://github.com/notCalle/ruby-dagger/compare/v0.3.2..HEAD
+[Unreleased]: https://github.com/notCalle/ruby-dagger/compare/v0.3.3..HEAD
+[0.3.3]: https://github.com/notCalle/ruby-dagger/compare/v0.3.2..v0.3.3
 [0.3.2]: https://github.com/notCalle/ruby-dagger/compare/v0.3.1..v0.3.2
 [0.3.1]: https://github.com/notCalle/ruby-dagger/compare/v0.3.0..v0.3.1
 [0.3.0]: https://github.com/notCalle/ruby-dagger/compare/v0.2.1..v0.3.0
