@@ -10,8 +10,8 @@ module Dagger
   class Default
     using KeyTree::Refinements
 
-    def self.proc(*args)
-      new(*args).default_proc
+    def self.proc(*args, **kwargs)
+      new(*args, **kwargs).default_proc
     end
 
     # Initialize a default value generator for a +vertex+
