@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.4.0] - 2021-05-30
+
+This release updates dependencies, changes the minimum Ruby version to 2.6, and adds support for Ruby version 3.
+
 ### Added
 
 - Ruby version 3 is now supported.
@@ -69,7 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 These releases have no change logs.
 
 
-[Unreleased]: https://github.com/notCalle/ruby-dagger/compare/v0.3.3..HEAD
+[Unreleased]: https://github.com/notCalle/ruby-dagger/compare/v0.4.0..HEAD
+[0.4.0]: https://github.com/notCalle/ruby-dagger/compare/v0.3.3..v0.4.0
 [0.3.3]: https://github.com/notCalle/ruby-dagger/compare/v0.3.2..v0.3.3
 [0.3.2]: https://github.com/notCalle/ruby-dagger/compare/v0.3.1..v0.3.2
 [0.3.1]: https://github.com/notCalle/ruby-dagger/compare/v0.3.0..v0.3.1
