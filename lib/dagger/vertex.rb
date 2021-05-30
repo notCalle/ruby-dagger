@@ -121,7 +121,7 @@ module Dagger
 
     def initialize_default_tree(cached)
       default_args = cached ? { cached: true, fallback: @inherited } : {}
-      default_proc = Default.proc(self, default_args)
+      default_proc = Default.proc(self, **default_args)
       KeyTree::Tree.new(&default_proc)
     end
   end

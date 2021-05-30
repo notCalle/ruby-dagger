@@ -20,8 +20,8 @@ module Dagger
       @deferred_edges = []
       super
       @deferred_edges.each do |args|
-        tail, head, *kwargs = args
-        add_edge(*[tail, head].map { |name| fetch(name) }, *kwargs)
+        *args, kwargs = args
+        add_edge(*args.map { |name| fetch(name) }, **kwargs)
       end
     end
 
@@ -72,8 +72,8 @@ module Dagger
       result
     end
 
-    def defer_edge(*args)
-      @deferred_edges << args
+    def defer_edge(*args, **kwargs)
+      @deferred_edges << [*args, kwargs]
     end
   end
 end
