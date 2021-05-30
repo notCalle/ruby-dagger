@@ -1,7 +1,8 @@
 [![Gem Version](https://badge.fury.io/rb/ruby-dagger.svg)](https://badge.fury.io/rb/ruby-dagger)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4038215eb129292a826d/maintainability)](https://codeclimate.com/github/notCalle/ruby-dagger/maintainability)
 [![codecov](https://codecov.io/gh/notCalle/ruby-dagger/branch/master/graph/badge.svg)](https://codecov.io/gh/notCalle/ruby-dagger)
-[![Build Status](https://dev.azure.com/notCalle/GitHub%20CI/_apis/build/status/notCalle.ruby-dagger?branchName=master)](https://dev.azure.com/notCalle/GitHub%20CI/_build/latest?definitionId=4&branchName=master)
+[![Ruby](https://github.com/notCalle/ruby-dagger/actions/workflows/ruby.yml/badge.svg)](https://github.com/notCalle/ruby-dagger/actions/workflows/ruby.yml)
+
 # Dagger
 
 `Dagger` can manage a
