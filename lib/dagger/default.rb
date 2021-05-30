@@ -106,8 +106,7 @@ module Dagger
     # :call-seq:
     #   default_rules(key) => Array of Hash
     def default_rules(key)
-      result = @vertex.fetch(@rule_prefix + key, nil)
-      result
+      @vertex.fetch(@rule_prefix + key, nil)
     end
 
     # Process the methods in a rule chain
