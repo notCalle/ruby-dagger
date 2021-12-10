@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'dagger/version'
 
 dev_deps = {
-  'bundler' => '~> 2.2',
+  'bundler' => '~> 2.2.33',
   'codecov' => '~> 0.5.0',
   'pry' => '~> 0.14.0',
   'rake' => '~> 13.0',
@@ -43,4 +43,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'tangle', '~> 0.11.0'
 
   dev_deps.each { |d| spec.add_development_dependency(*d) }
+  spec.metadata = {
+    'rubygems_mfa_required' => 'true'
+  }
 end
