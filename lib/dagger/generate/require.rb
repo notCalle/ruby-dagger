@@ -13,7 +13,7 @@ module Dagger
     class Require < Dagger::Generator
       def process(keys)
         stop unless keys.any? do |key, regexps|
-          string = dictionary[key]
+          string = @context.dictionary[key]
           array(regexps).any? do |regexp|
             ::Regexp.new(regexp).match?(string)
           end

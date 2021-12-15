@@ -11,8 +11,10 @@ module Dagger
     #   - ...
     class RequireName < Dagger::Generator
       def process(regexps)
+        name = @context.vertex.name
+
         stop unless array(regexps).any? do |regexp|
-          ::Regexp.new(regexp).match?(vertex.name)
+          ::Regexp.new(regexp).match?(name)
         end
       end
     end

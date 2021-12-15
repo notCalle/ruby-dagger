@@ -37,7 +37,7 @@ module Dagger
       def process_hash_item(key, args)
         case args
         when ::String
-          send("numeric_#{key}", dictionary[args])
+          send("numeric_#{key}", @context.dictionary[args])
         else
           send("numeric_#{key}", process_args(args))
         end
