@@ -22,7 +22,7 @@ module Dagger
         sources.each do |key, regexps|
           matches.merge!(match_regexps(key, regexps))
         end
-        update(dictionary: matches)
+        @context.dictionary = matches
       end
 
       private
@@ -33,7 +33,7 @@ module Dagger
       # :call-seq:
       #   match_regexps(key, regexps) => Hash
       def match_regexps(key, regexps)
-        string = dictionary[key]
+        string = @context.dictionary[key]
 
         array(regexps).each_with_object({}) do |regexp, matches|
           matchdata = ::Regexp.new(regexp).match(string)

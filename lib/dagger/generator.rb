@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'forwardable'
-
 module Dagger
   # Abstract super class for default value generators.
   # Stores the +Context+ on initialization, and provides private
@@ -30,8 +28,6 @@ module Dagger
   # [+arg+]     Value for current method in the +rule_chain+
   # [+value+]   If a value was found it should be +yield+:ed
   class Generator
-    extend Forwardable
-
     def self.[](context, arg, &result_yielder)
       new(context).process(arg, &result_yielder)
     end
@@ -42,22 +38,12 @@ module Dagger
 
     private
 
-    delegate %i[dictionary vertex] => :@context
-
     # Stop processing the current rule chain
     #
     # :call-seq:
     #   stop
     def stop
       throw @context.stop
-    end
-
-    # Update context attributes with new values
-    #
-    # :call-seq:
-    #   update(key: value, ...)
-    def update(**kwargs)
-      kwargs.each { |key, value| @context[key] = value }
     end
 
     # Make an array of a value unless it is already an array
