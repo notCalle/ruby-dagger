@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.platform = Gem::Platform::RUBY
-  spec.required_ruby_version = '>= 2.6', '< 4.0'
+  spec.required_ruby_version = '>= 2.7', '< 4.0'
 
   spec.add_dependency 'git-version-bump', '~> 0.17.0'
   spec.add_dependency 'key_tree', '~> 0.8.0'
