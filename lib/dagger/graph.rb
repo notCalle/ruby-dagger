@@ -33,8 +33,6 @@ module Dagger
       !(!@cached)
     end
 
-    protected
-
     def symlink_loader(path:, parent:, lstat:, **)
       return unless lstat.symlink?
 
